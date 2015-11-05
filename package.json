@@ -1,0 +1,21 @@
+{
+  "name": "geolocation",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "dependencies": {
+    "body-parser": "~1.0.0",
+    "bootpag": "^1.0.7",
+    "cookie-parser": "~1.0.1",
+    "debug": "~0.7.4",
+    "ejs": "^2.3.4",
+    "express": "~4.2.0",
+    "lorem-ipsum": "^1.0.3",
+    "mongodb": "*",
+    "mongoskin": "*",
+    "morgan": "~1.0.0",
+    "static-favicon": "~1.0.0"
+  }
+}

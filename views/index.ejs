@@ -1,0 +1,159 @@
+ <html>
+<title>Geolocations_mapery</title>
+
+<head>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link href="http://code.google.com/apis/maps/documentation/javascript/examples/default.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+    
+</head>
+
+<body onload="ReverseGeocode.Init()">
+ 
+    <div class="jumbotron text-center">
+    <h1>Geolocations_mapery..!</h1>          
+  </div>
+    <div class="container" id="map_canvas" style="height: 50%; width: 1000px;"> </div>
+    <br />
+    </div
+    <div class="col-md-2 center-block "> </div>
+    <div class="col-md-2 center-block "> </div>
+    <div class="col-md-2 center-block ">
+        <button onclick="window.location.href='/add'" class="btn btn-info icon-save">
+            <span class="glyphicon glyphicon-plus-sign"></span> add documents</button>
+    </div>
+    <div class="col-md-2 center-block ">
+        <button onclick="window.location.href='/search'" class="btn btn-info icon-save">
+            <span class="glyphicon glyphicon-search"></span> Search the Data</button>
+    </div>
+    <div class="col-md-3 center-block">
+        <input name="Latitude" type="text" id="lat" size="16" class="form-control" />
+        <br/>
+        <input name="Longitude" type="text" id="lon" size="16" class="form-control" />
+        <br/>
+        <input type="button" value="Click to add current location" class="btn btn-info icon-save" onclick="ReverseGeocode.ReverseCode()">
+    </div>
+  
+     <div class="col-md-12 center-block "> <br />
+<table id="example" class="table table-bordered" cellspacing="0" width="100%">
+ <thead>  
+          <tr>  
+            <th>ID</th>  
+            <th>Title</th>  
+            <th>Description</th>  
+            <th>Location</th>  
+          </tr>  
+        </thead>     
+
+    <% items.forEach(function(find) { %>
+    <tbody> 
+    <tr>
+      <td><%= find._id %></td>
+      <td><%= find.title %></td>
+      <td><%= find.description %></td>
+      <td><%= find.location %></td> 
+    </tr>   
+    </tbody>   
+   <% }); %>
+</table>
+    </div>
+
+    <script type="text/javascript">
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(success, error);
+    } else {
+        alert('Your browser does not support geolocation.');
+    }
+
+    function success(position) {
+        console.log(position);
+        var lat = document.getElementById('lat'),
+            lon = document.getElementById('lon');
+        lat.value = position.coords.latitude;
+        lon.value = position.coords.longitude;
+    }
+
+    function error(err) {
+        alert(err);
+    }
+
+
+    var ReverseGeocode = function() {
+
+        var geocoder, map, marker;
+
+        geocoder = new google.maps.Geocoder();
+
+        function GeoCode(latlng) {
+
+            geocoder.geocode({
+                'latLng': latlng
+            }, function(results, status) {
+                if (status !== google.maps.GeocoderStatus.OK) {
+                    alert(status);
+                }
+
+                if (status == google.maps.GeocoderStatus.OK) {
+
+                    if (results[0]) {
+
+                        map.setZoom(16);
+                        marker = new google.maps.Marker({
+                            map: map,
+                            animation: google.maps.Animation.BOUNCE,
+
+                        });
+                        marker.setPosition(latlng);
+                        map.panTo(latlng);
+                    }
+                    google.maps.event.addListener(map, "click", function(event) {
+
+                        var clickLat = event.latLng.lat();
+                        var clickLon = event.latLng.lng();
+
+
+                        document.getElementById("lat").value = clickLat.toFixed(15);
+                        document.getElementById("lon").value = clickLon.toFixed(15);
+
+                        var marker = new google.maps.Marker({
+                            position: new google.maps.LatLng(clickLat, clickLon),
+                            map: map,
+                            draggable: true,
+                        });
+                    });
+
+                }
+
+            });
+
+        }
+        return {
+            Init: function() {
+
+                var latlng = new google.maps.LatLng(12.004013727929129, 76.390842944383621);
+
+                var myOptions = {
+                    zoom: 5,
+                    center: latlng,
+                    mapTypeId: 'roadmap'
+                }
+                map = new google.maps.Map(document.getElementById('map_canvas'), myOptions);
+                GeoCode(latlng);
+            },
+            ReverseCode: function() {
+
+                var lat = document.getElementById('lat').value;
+                var lng = document.getElementById('lon').value;
+                var latlng = new google.maps.LatLng(lat, lng);
+                GeoCode(latlng);
+            }
+        };
+
+    }();
+    </script>
+
+</html>

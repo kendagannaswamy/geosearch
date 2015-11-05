@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title> Geolocations in mapery</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script type="text/javascript" src="http://cdn.datatables.net/1.10.9/css/dataTables.bootstrap.min.css"></script>
+    <script src="https://cdn.datatables.net/1.10.9/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.9/js/dataTables.bootstrap.min.js"></script>
+    <style type="text/css">
+    #btnSearch {
+        position: absolute;
+        float: right;
+        margin-left: 300px;
+        margin-top: -35px;
+    }
+    
+    #inputSearch {
+        margin-top: 15px;
+    }
+    
+    .a {
+        text-decoration: none;
+    }
+    </style>
+</head>
+
+<body onload="ReverseGeocode.Init()">
+    <div class="container">
+        <!-- / WRAPPER-->
+        <br/>
+        <div class="col-md-2 center-block ">
+            <button onclick="window.location.href='/add'" class="btn btn-info icon-save"><span class="glyphicon glyphicon-plus-sign"></span> add documents</button>
+        </div>
+        <div class="col-md-2 center-block ">
+            <button onclick="window.location.href='/map'" class="btn btn-info icon-save"><span class="glyphicon glyphicon-search"></span> Search by Map</button>
+        </div>
+        <br/>
+        <hr/>
+        <div class="navbar">
+            <div class="navbar-header">
+                <a class="navbar-brand" rel="home" href="/">Geolocations Mapery</a>
+            </div>
+            <div class="collapse navbar-collapse">
+                <div class="col-sm-3 col-md-3 pull-center">
+                    <!-- SEARCH-->
+                    <div id="search">
+                        <form action="/search" method="POST">
+                            <div>
+                                <input type="text" name="msg" id="msgBox" placeholder="Title,Description" class="form-control">
+                            </div>
+                            <br/>
+                            <div>
+                                <input type="text" name="lon" id="Longitude" placeholder="longitude" class="form-control">
+                            </div>
+                            <br/>
+                            <div>
+                                <input type="text" name="lat" id="Latitude" placeholder="latitude" class="form-control">
+                            </div>
+                            <div>
+                                <input id="btnSearch" type="submit" value="search" class="btn btn-info" onclick="ReverseGeocode.ReverseCode()">
+                            </div>
+                        </form>
+                    </div>
+                    <!-- /END SEARCH-->
+                </div>
+            </div>
+        </div>
+        <!-- </div> -->
+        <div class="row header" style="text-align:center;color:green"></div>
+        <!-- <table  class="table table-striped"> -->
+        <table id="example" class="table table-bordered" cellspacing="0" width="100%">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Location</th>
+                </tr>
+            </thead>
+            <% items.forEach(function(find) { %>
+                <tbody>
+                    <tr>
+                        <td>
+                            <%= find._id %>
+                        </td>
+                        <td>
+                            <%= find.title %>
+                        </td>
+                        <td>
+                            <%= find.description %>
+                        </td>
+                        <td>
+                            <%= find.location %>
+                        </td>
+                    </tr>
+                </tbody>
+                <% }); %>
+        </table>
+    </div>
+    <script type="text/javascript">
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(success, error);
+    } else {
+        alert('Your browser does not support geolocation.');
+    }
+
+    function success(position) {
+        console.log(position);
+        var lat = document.getElementById('lat'),
+            lon = document.getElementById('lon');
+        lat.value = position.coords.latitude;
+        lon.value = position.coords.longitude;
+    }
+
+    function error(err) {
+        alert(err);
+    }
+    </script>
+</body>
+
+</html>
